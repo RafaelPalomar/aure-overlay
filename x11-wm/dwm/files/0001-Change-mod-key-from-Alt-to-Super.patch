@@ -1,0 +1,25 @@
+From 6772ea71e177c329a103db5f5e4177f0f76d0229 Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Sun, 15 Nov 2020 11:17:54 +0100
+Subject: [PATCH] Change mod key from Alt to Super
+
+---
+ config.def.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config.def.h b/config.def.h
+index 1c0b587..0bf6c2a 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -44,7 +44,7 @@ static const Layout layouts[] = {
+ };
+ 
+ /* key definitions */
+-#define MODKEY Mod1Mask
++#define MODKEY Mod4Mask
+ #define TAGKEYS(KEY,TAG) \
+ 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
+ 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
+-- 
+2.26.2
+
