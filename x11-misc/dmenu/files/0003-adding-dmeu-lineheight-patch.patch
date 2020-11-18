@@ -1,7 +1,7 @@
-From dd8bda9c80bae0b718fe9ca31c2d89666dfd9581 Mon Sep 17 00:00:00 2001
+From 6844cd3ed25b4786c9b1bdeea1dba9672984e3d2 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <mail@rafaelpalomar.net>
 Date: Mon, 30 Dec 2019 16:25:53 +0100
-Subject: [PATCH 2/2] ENH: Adding dmeu-lineheight patch
+Subject: [PATCH 3/3] adding dmeu-lineheight patch
 
 ---
  config.def.h |  1 +
@@ -22,7 +22,7 @@ index 1edb647..317fa2f 100644
  /*
   * Characters not considered part of a word while deleting words
 diff --git a/dmenu.1 b/dmenu.1
-index 762f707..b711c06 100644
+index 4176979..e967049 100644
 --- a/dmenu.1
 +++ b/dmenu.1
 @@ -53,6 +53,9 @@ dmenu will not directly display the keyboard input, but instead replace it with
@@ -36,10 +36,10 @@ index 762f707..b711c06 100644
  dmenu is displayed on the monitor number supplied. Monitor numbers are starting
  from 0.
 diff --git a/dmenu.c b/dmenu.c
-index 01eab58..e1ee104 100644
+index 165294e..c7b1832 100644
 --- a/dmenu.c
 +++ b/dmenu.c
-@@ -131,8 +131,8 @@ drawmenu(void)
+@@ -132,8 +132,8 @@ drawmenu(void)
  {
  	unsigned int curpos;
  	struct item *item;
@@ -50,7 +50,7 @@ index 01eab58..e1ee104 100644
  
  	drw_setscheme(drw, scheme[SchemeNorm]);
  	drw_rect(drw, 0, 0, mw, mh, 1, 1);
-@@ -154,7 +154,7 @@ drawmenu(void)
+@@ -155,7 +155,7 @@ drawmenu(void)
  	curpos = TEXTW(text) - TEXTW(&text[cursor]);
  	if ((curpos += lrpad / 2 - 1) < w) {
  		drw_setscheme(drw, scheme[SchemeNorm]);
@@ -59,7 +59,7 @@ index 01eab58..e1ee104 100644
  	}
  
  	if (lines > 0) {
-@@ -620,6 +620,7 @@ setup(void)
+@@ -624,6 +624,7 @@ setup(void)
  
  	/* calculate menu geometry */
  	bh = drw->fonts->h + 2;
@@ -67,7 +67,7 @@ index 01eab58..e1ee104 100644
  	lines = MAX(lines, 0);
  	mh = (lines + 1) * bh;
  #ifdef XINERAMA
-@@ -701,6 +702,7 @@ static void
+@@ -705,6 +706,7 @@ static void
  usage(void)
  {
  	fputs("usage: dmenu [-bfiPv] [-l lines] [-p prompt] [-fn font] [-m monitor]\n"
@@ -75,7 +75,7 @@ index 01eab58..e1ee104 100644
  	      "             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]\n", stderr);
  	exit(1);
  }
-@@ -736,6 +738,10 @@ main(int argc, char *argv[])
+@@ -742,6 +744,10 @@ main(int argc, char *argv[])
  			prompt = argv[++i];
  		else if (!strcmp(argv[i], "-fn"))  /* font or font set */
  			fonts[0] = argv[++i];

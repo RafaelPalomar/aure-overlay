@@ -25,8 +25,9 @@ DEPEND="${RDEPEND}
 "
 PATCHES=(
 	${FILESDIR}/${PN}-4.9-gentoo.patch
-	${FILESDIR}/0001-ENH-Adding-dmenu-password-patch.patch
-	${FILESDIR}/0002-ENH-Adding-dmeu-lineheight-patch.patch
+	${FILESDIR}/0001-adding-printinputtext-patch.patch
+	${FILESDIR}/0002-adding-dmenu-password-patch.patch
+	${FILESDIR}/0003-adding-dmeu-lineheight-patch.patch
 )
 
 src_prepare() {

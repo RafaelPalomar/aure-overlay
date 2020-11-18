@@ -1,0 +1,92 @@
+From ba6a3800f82d30975c2348e0935fef350879457e Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Tue, 17 Nov 2020 22:38:32 +0100
+Subject: [PATCH 1/3] adding printinputtext patch
+
+---
+ dmenu.1 |  8 ++++++--
+ dmenu.c | 15 +++++++++++++--
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/dmenu.1 b/dmenu.1
+index 323f93c..f8eb015 100644
+--- a/dmenu.1
++++ b/dmenu.1
+@@ -3,7 +3,7 @@
+ dmenu \- dynamic menu
+ .SH SYNOPSIS
+ .B dmenu
+-.RB [ \-bfiv ]
++.RB [ \-bfitv ]
+ .RB [ \-l
+ .IR lines ]
+ .RB [ \-m
+@@ -75,6 +75,9 @@ defines the selected background color.
+ .BI \-sf " color"
+ defines the selected foreground color.
+ .TP
++.B \-t
++Return key prints input text instead of selection.
++.TP
+ .B \-v
+ prints version information to stdout, then exits.
+ .TP
+@@ -89,13 +92,14 @@ Copy the selected item to the input field.
+ .TP
+ .B Return
+ Confirm selection.  Prints the selected item to stdout and exits, returning
+-success.
++success. If \-t option is given it confirms input instead of selection.
+ .TP
+ .B Ctrl-Return
+ Confirm selection.  Prints the selected item to stdout and continues.
+ .TP
+ .B Shift\-Return
+ Confirm input.  Prints the input text to stdout and exits, returning success.
++If \-t option is given it confirms selection instead of input.
+ .TP
+ .B Escape
+ Exit without selecting an item, returning failure.
+diff --git a/dmenu.c b/dmenu.c
+index 65f25ce..d778b8b 100644
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -44,6 +44,7 @@ static struct item *items = NULL;
+ static struct item *matches, *matchend;
+ static struct item *prev, *curr, *next, *sel;
+ static int mon = -1, screen;
++static int use_text_input = 0;
+ 
+ static Atom clip, utf8;
+ static Display *dpy;
+@@ -464,7 +465,10 @@ insert:
+ 		break;
+ 	case XK_Return:
+ 	case XK_KP_Enter:
+-		puts((sel && !(ev->state & ShiftMask)) ? sel->text : text);
++		if (use_text_input)
++			puts((sel && (ev->state & ShiftMask)) ? sel->text : text);
++		else
++			puts((sel && !(ev->state & ShiftMask)) ? sel->text : text);
+ 		if (!(ev->state & ControlMask)) {
+ 			cleanup();
+ 			exit(0);
+@@ -712,7 +716,14 @@ main(int argc, char *argv[])
+ 		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
+ 			fstrncmp = strncasecmp;
+ 			fstrstr = cistrstr;
+-		} else if (i + 1 == argc)
++		} else if (!strcmp(argv[i], "-t")) /* favors text input over selection */
++			use_text_input = 1;
++<<<<<<< Updated upstream
++=======
++		else if (!strcmp(argv[i], "-P"))   /* is the input a password */
++		        passwd = 1;
++>>>>>>> Stashed changes
++		else if (i + 1 == argc)
+ 			usage();
+ 		/* these options take one argument */
+ 		else if (!strcmp(argv[i], "-l"))   /* number of lines in vertical list */
+-- 
+2.26.2
+
