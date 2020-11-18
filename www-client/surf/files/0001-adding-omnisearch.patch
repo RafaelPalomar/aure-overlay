@@ -1,0 +1,124 @@
+From 08c382c2de990ce3e5556b76ad6c5ef3d76e3666 Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Wed, 18 Nov 2020 10:21:42 +0100
+Subject: [PATCH] adding omnisearch
+
+- This is based on https://github.com/sc0ttj/surf/commit/196cfcaac08a6c8c55420ca52b8c68e193500485
+
+- This does parsing and resolvign of url. If the input is not an url, it
+will use the default search engine, otherwise it will visit the provided
+ur.
+
+- This adds a set of search engines one can use by pre-fixing the search
+engine code before the term to search.
+---
+ config.def.h | 32 ++++++++++++++++++++++++++++++++
+ surf.c       | 28 +++++++++++++++++++++++++++-
+ 2 files changed, 59 insertions(+), 1 deletion(-)
+
+diff --git a/config.def.h b/config.def.h
+index 6d3135e..d055ff8 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -6,6 +6,38 @@ static char *styledir       = "~/.surf/styles/";
+ static char *cachedir       = "~/.surf/cache/";
+ static char *cookiefile     = "~/.surf/cookies.txt";
+ 
++/* sc0ttj  added lots of custom search engines:
++ *
++ * Note: any search in location bar that is not a URL, file
++ *       or prefixed custom search (below), will fall back
++ *       to using the first search engine in this list.
++ */
++static SearchEngine searchengines[] = {
++	{ "dg",  "https://duckduckgo.com/?q=%s"   },
++	{ "ar",  "https://archive.org/search.php?query=%s"   },
++	{ "aw",  "https://wiki.archlinux.org/index.php?search=%s"   },
++	{ "bbc", "https://www.bbc.co.uk/search?q=%s"   },
++	{ "gg",  "http://www.google.com/search?q=%s"   },
++	{ "gh",  "https://github.com/search?q=%s"   },
++	{ "gist", "https://gist.github.com/search?q=%s"   },
++	{ "gi",  "https://www.google.com/search?&q=%s&oq=%s"   },
++	{ "im",  "https://www.imdb.com/find?q=%s"   },
++	{ "man", "http://manpages.org/%s/1" },
++	{ "pf",  "https://forum.puppylinux.com/search.php?keywords=%s" },
++	{ "pl",  "https://ww1.put-locker.com/?s=%s" },
++	{ "sc",  "https://soundcloud.com/search?q=%s" },
++	{ "sp",  "https://startpage.com/%s/search" },
++	{ "so",  "https://stackoverflow.com/search?q=%s" },
++	{ "sx",  "https://stackexchange.com/search?q=%s" },
++	{ "tw",  "https://twitter.com/search?q=%s&src=typed_query" },
++	{ "txt",  "https://www.textise.net/showText.aspx?strURL=https%253A//www.google.com/search%253Fq%253D%s" },
++	{ "ud",  "https://www.urbandictionary.com/define.php?term=%s" },
++	{ "ux",  "https://unix.stackexchange.com/search?q=%s" },
++	{ "yt",  "https://www.youtube.com/results?search_query=%s" },
++	{ "wb",  "https://web.archive.org/web/*/%s" },
++	{ "wk",  "https://en.wikipedia.org/wiki/%s" },
++};
++
+ /* Webkit default features */
+ static Parameter defconfig[ParameterLast] = {
+ 	SETB(AcceleratedCanvas,  1),
+diff --git a/surf.c b/surf.c
+index 93a1629..81415fb 100644
+--- a/surf.c
++++ b/surf.c
+@@ -140,6 +140,11 @@ typedef struct {
+ 	regex_t re;
+ } SiteStyle;
+ 
++typedef struct {
++	char *token;
++	char *uri;
++} SearchEngine;
++
+ /* Surf */
+ static void usage(void);
+ static void die(const char *errstr, ...);
+@@ -202,6 +207,7 @@ static void responsereceived(WebKitDownload *d, GParamSpec *ps, Client *c);
+ static void download(Client *c, WebKitURIResponse *r);
+ static void closeview(WebKitWebView *v, Client *c);
+ static void destroywin(GtkWidget* w, Client *c);
++static gchar *parseuri(const gchar *uri);
+ 
+ /* Hotkeys */
+ static void pasteuri(GtkClipboard *clipboard, const char *text, gpointer d);
+@@ -477,7 +483,7 @@ loaduri(Client *c, const Arg *a)
+ 		url = g_strdup_printf("file://%s", path);
+ 		free(path);
+ 	} else {
+-		url = g_strdup_printf("http://%s", uri);
++		url = parseuri(uri);
+ 	}
+ 
+ 	setatom(c, AtomUri, url);
+@@ -1461,6 +1467,26 @@ destroywin(GtkWidget* w, Client *c)
+ 		gtk_main_quit();
+ }
+ 
++gchar *
++parseuri(const gchar *uri) {
++	guint i;
++
++	for (i = 0; i < LENGTH(searchengines); i++) {
++		if (searchengines[i].token == NULL || searchengines[i].uri == NULL ||
++		    *(uri + strlen(searchengines[i].token)) != ' ')
++			continue;
++		if (g_str_has_prefix(uri, searchengines[i].token))
++			return g_strdup_printf(searchengines[i].uri,
++					       uri + strlen(searchengines[i].token) + 1);
++	}
++
++	/* sc0ttj simple omnisearch - use default search engine for all
++	 *        non-URL and non-custom search engine uris
++	 */
++	return g_strdup_printf(searchengines[0].uri,
++					       uri);
++}
++
+ void
+ pasteuri(GtkClipboard *clipboard, const char *text, gpointer d)
+ {
+-- 
+2.26.2
+
