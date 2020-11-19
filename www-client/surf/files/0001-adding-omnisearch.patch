@@ -1,7 +1,7 @@
 From 08c382c2de990ce3e5556b76ad6c5ef3d76e3666 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Wed, 18 Nov 2020 10:21:42 +0100
-Subject: [PATCH] adding omnisearch
+Subject: [PATCH 1/2] adding omnisearch
 
 - This is based on https://github.com/sc0ttj/surf/commit/196cfcaac08a6c8c55420ca52b8c68e193500485
 

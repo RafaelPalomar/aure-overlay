@@ -38,6 +38,7 @@ RDEPEND="
 PATCHES=(
 	"${FILESDIR}"/${PN}-2.0-gentoo.patch
 	"${FILESDIR}"/0001-adding-omnisearch.patch
+	"${FILESDIR}"/0002-sensible-keybindings.patch
 )
 
 pkg_setup() {

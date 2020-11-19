@@ -1,0 +1,67 @@
+From ea6bd38151d87b26b8e280a5a7b5eb7411f0de30 Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Wed, 18 Nov 2020 21:06:29 +0100
+Subject: [PATCH 2/2] Sensible keybindings
+
+- This adds some keybindings
+- This fixes zoom in keybinding
+---
+ config.def.h | 20 +++++++++++++++-----
+ surf.c       |  3 +++
+ 2 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index d055ff8..22302f6 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -157,11 +157,11 @@ static Key keys[] = {
+ 	{ MODKEY,                GDK_KEY_u,      scroll,     { .i = 'l' } },
+ 
+ 
+-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_j,      zoom,       { .i = -1 } },
+-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_k,      zoom,       { .i = +1 } },
+-	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_q,      zoom,       { .i = 0  } },
+-	{ MODKEY,                GDK_KEY_minus,  zoom,       { .i = -1 } },
+-	{ MODKEY,                GDK_KEY_plus,   zoom,       { .i = +1 } },
++	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_j,       zoom,       { .i = -1 } },
++	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_k,       zoom,       { .i = +1 } },
++	{ MODKEY,                GDK_KEY_0,       zoom,       { .i = 0  } },
++	{ MODKEY,                GDK_KEY_minus,   zoom,       { .i = -1 } },
++	{ MODKEY,                GDK_KEY_equal,   zoom,       { .i = +1 } },
+ 
+ 	{ MODKEY,                GDK_KEY_p,      clipboard,  { .b = 1 } },
+ 	{ MODKEY,                GDK_KEY_y,      clipboard,  { .b = 0 } },
+@@ -183,6 +183,16 @@ static Key keys[] = {
+ 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_v,      toggle,     { .i = Plugins } },
+ 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_b,      toggle,     { .i = ScrollBars } },
+ 	{ MODKEY|GDK_SHIFT_MASK, GDK_KEY_m,      toggle,     { .i = Style } },
++
++  /* sc0ttj support special keyboard keys.. see this link: */
++  /* https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values */
++	{ 0,                     GDK_KEY_ZoomOut, zoom,       { .i = -1 } },
++	{ 0,                     GDK_KEY_ZoomIn,  zoom,       { .i = +1 } },
++	{ 0,                     GDK_KEY_Back,    navigate,   { .i = -1 } },
++	{ 0,                     GDK_KEY_Forward, navigate,   { .i = +1 } },
++	{ 0,                     GDK_KEY_Refresh, reload,     { .i = 0 } },
++	{ 0,                     GDK_KEY_Reload,  reload,     { .i = 0 } },
++	{ 0,                     GDK_KEY_Stop,    stop,       { 0 } },
+ };
+ 
+ /* button definitions */
+diff --git a/surf.c b/surf.c
+index 81415fb..07a4c63 100644
+--- a/surf.c
++++ b/surf.c
+@@ -31,6 +31,9 @@
+ 
+ #define LENGTH(x)               (sizeof(x) / sizeof(x[0]))
+ #define CLEANMASK(mask)         (mask & (MODKEY|GDK_SHIFT_MASK))
++#define LENGTH(x)        (sizeof(x) / sizeof(x[0]))
++/* sc0ttj support MOD1 key (usually ALT) in key bindings  */
++#define CLEANMASK(mask)  (mask & (MODKEY|GDK_SHIFT_MASK|GDK_MOD1_MASK))
+ #define SETB(p, s)              [p] = { { .b = s }, }
+ #define SETI(p, s)              [p] = { { .i = s }, }
+ #define SETV(p, s)              [p] = { { .v = s }, }
+-- 
+2.26.2
+
