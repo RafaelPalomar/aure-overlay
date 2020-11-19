@@ -1,7 +1,7 @@
 From 6772ea71e177c329a103db5f5e4177f0f76d0229 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Sun, 15 Nov 2020 11:17:54 +0100
-Subject: [PATCH] Change mod key from Alt to Super
+Subject: [PATCH 1/2] Change mod key from Alt to Super
 
 ---
  config.def.h | 2 +-

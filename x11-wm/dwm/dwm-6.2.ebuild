@@ -17,6 +17,8 @@ RDEPEND="
 	media-libs/fontconfig
 	x11-libs/libX11
 	x11-libs/libXft
+	x11-misc/dmenu
+	x11-misc/dmenu-extras
 	xinerama? ( x11-libs/libXinerama )
 "
 DEPEND="
@@ -26,6 +28,7 @@ DEPEND="
 
 PATCHES=(
 	${FILESDIR}/0001-Change-mod-key-from-Alt-to-Super.patch
+	${FILESDIR}/0002-enable-quit-confirmation.patch
 )
 
 src_prepare() {

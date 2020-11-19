@@ -1,0 +1,60 @@
+From f75e88b1ab9cc5f22fa06714f81b9428bad4fe5f Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Thu, 19 Nov 2020 13:26:16 +0100
+Subject: [PATCH 2/2] enable quit confirmation
+
+---
+ config.def.h |  3 ++-
+ dwm.c        | 15 ++++++++++++++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index 0bf6c2a..b930609 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -58,6 +58,7 @@ static const Layout layouts[] = {
+ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+ static const char *termcmd[]  = { "st", NULL };
++static const char *quitcmd[]  = { "dmenu-really Do you want to leave dwm?"};
+ 
+ static Key keys[] = {
+ 	/* modifier                     key        function        argument */
+@@ -93,7 +94,7 @@ static Key keys[] = {
+ 	TAGKEYS(                        XK_7,                      6)
+ 	TAGKEYS(                        XK_8,                      7)
+ 	TAGKEYS(                        XK_9,                      8)
+-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
++	{ MODKEY|ShiftMask,             XK_q,      quit,           {.v = quitcmd } },
+ };
+ 
+ /* button definitions */
+diff --git a/dwm.c b/dwm.c
+index 664c527..62d6814 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -1249,7 +1249,20 @@ propertynotify(XEvent *e)
+ void
+ quit(const Arg *arg)
+ {
+-	running = 0;
++	FILE *fp;
++	char path[1035];
++
++	fp = popen(((char **)arg->v)[0], "r");
++	if (fp == NULL) {
++		return;
++	}
++
++	if(fgets(path, sizeof(path), fp) != NULL) {
++		if(!strcmp(path, "Yes\n"))
++			running = 0;
++	}
++
++	pclose(fp);
+ }
+ 
+ Monitor *
+-- 
+2.26.2
+
