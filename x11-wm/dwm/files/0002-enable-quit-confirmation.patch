@@ -1,7 +1,7 @@
-From f75e88b1ab9cc5f22fa06714f81b9428bad4fe5f Mon Sep 17 00:00:00 2001
+From 2b3193cdf74de7b25bbd5cf02eac349a42eb5677 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Thu, 19 Nov 2020 13:26:16 +0100
-Subject: [PATCH 2/2] enable quit confirmation
+Subject: [PATCH 2/4] enable quit confirmation
 
 ---
  config.def.h |  3 ++-
@@ -9,7 +9,7 @@ Subject: [PATCH 2/2] enable quit confirmation
  2 files changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/config.def.h b/config.def.h
-index 0bf6c2a..b930609 100644
+index e75540e..0d088d7 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -58,6 +58,7 @@ static const Layout layouts[] = {

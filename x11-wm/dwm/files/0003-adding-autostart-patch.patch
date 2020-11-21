@@ -1,7 +1,7 @@
-From 4e75bc460c036cbcd204b94100f8fee228766da0 Mon Sep 17 00:00:00 2001
+From 96eced5a2bc74f2541dab941b41356f2c2572c8e Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Fri, 20 Nov 2020 16:35:30 +0100
-Subject: [PATCH] adding autostart patch
+Subject: [PATCH 3/4] adding autostart patch
 
 ---
  dwm.1 | 23 ++++++++++++++++

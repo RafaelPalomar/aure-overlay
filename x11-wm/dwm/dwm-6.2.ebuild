@@ -27,9 +27,10 @@ DEPEND="
 "
 
 PATCHES=(
-	${FILESDIR}/0001-Change-mod-key-from-Alt-to-Super.patch
+	${FILESDIR}/0001-modify-key-bindings.patch
 	${FILESDIR}/0002-enable-quit-confirmation.patch
 	${FILESDIR}/0003-adding-autostart-patch.patch
+	${FILESDIR}/0004-x11-wm-dwm-6.2-adding-floatrules-patch.patch
 )
 
 src_prepare() {
