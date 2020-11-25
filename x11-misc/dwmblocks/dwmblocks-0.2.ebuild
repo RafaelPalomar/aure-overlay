@@ -23,7 +23,7 @@ DEPEND="${RDEPEND}
 "
 
 PATCHES=(
-	${FILESDIR}/0001-Adding-battery-status.patch
+	${FILESDIR}/0001-Update-configuration.patch
 )
 
 src_prepare() {

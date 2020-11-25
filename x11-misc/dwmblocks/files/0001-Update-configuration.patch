@@ -1,0 +1,33 @@
+From 66f313cfc5f4d82577b479fecc1e08d7c803a9fe Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Sun, 15 Nov 2020 21:30:34 +0100
+Subject: [PATCH] Update configuration
+
+---
+ blocks.def.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/blocks.def.h b/blocks.def.h
+index 9c22d68..df78aea 100644
+--- a/blocks.def.h
++++ b/blocks.def.h
+@@ -1,9 +1,13 @@
+ //Modify this file to change what commands output to your statusbar, and recompile using the make command.
+ static const Block blocks[] = {
+ 	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
+-	{"Mem:", "free -h | awk '/^Mem/ { print $3\"/\"$2 }' | sed s/i//g",	30,		0},
+-
+-	{"", "date '+%b %d (%a) %I:%M%p'",					5,		0},
++	{"", "wifi.sh",                                                     30,     0},
++	{"", "audio.sh",                                                    30,     1},
++	{"", "battery.sh",                                                  30,     0},
++	{" ", "memory.sh",	                                            30,		0},
++	{" ", "df -h |grep /$|tr -s ' '| cut -d' ' -f 4",	                30,		0},
++	{"", "date '+%b %d (%a) %I:%M%p'",					                 5,		0},
++	{"", "",                       					                 5,		0},
+ };
+ 
+ //sets delimeter between status commands. NULL character ('\0') means no delimeter.
+-- 
+2.26.2
+
