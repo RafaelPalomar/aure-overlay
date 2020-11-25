@@ -1,0 +1,196 @@
+From a21c29a863402026d01d635fabfa1254d9238797 Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Tue, 24 Nov 2020 20:02:51 +0100
+Subject: [PATCH] adding self restart
+
+---
+ Makefile      |  2 +-
+ arg.h         | 12 +++++++++
+ config.def.h  |  5 +++-
+ dwm.c         |  8 +-----
+ selfrestart.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ selfrestart.h |  9 +++++++
+ 6 files changed, 96 insertions(+), 9 deletions(-)
+ create mode 100644 arg.h
+ create mode 100644 selfrestart.c
+ create mode 100644 selfrestart.h
+
+diff --git a/Makefile b/Makefile
+index 77bcbc0..7a166b7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
+ 
+ include config.mk
+ 
+-SRC = drw.c dwm.c util.c
++SRC = drw.c dwm.c util.c selfrestart.c
+ OBJ = ${SRC:.c=.o}
+ 
+ all: options dwm
+diff --git a/arg.h b/arg.h
+new file mode 100644
+index 0000000..ba01d1d
+--- /dev/null
++++ b/arg.h
+@@ -0,0 +1,12 @@
++#ifndef __ARG_H_
++#define __ARG_H_
++
++typedef union {
++	int i;
++	unsigned int ui;
++	float f;
++	const void *v;
++} Arg;
++
++
++#endif // __ARG_H_
+diff --git a/config.def.h b/config.def.h
+index 8cebf10..af7bc5a 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -1,5 +1,7 @@
+ /* See LICENSE file for copyright and license details. */
+ 
++#include "selfrestart.h"
++
+ /* appearance */
+ static const unsigned int borderpx  = 1;        /* border pixel of windows */
+ static const unsigned int snap      = 32;       /* snap pixel */
+@@ -72,7 +74,7 @@ static Key keys[] = {
+ 	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+ 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
+ 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
+-	/* { MODKEY,                       XK_Return, zoom,           {0} }, */
++	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
+ 	{ MODKEY,                       XK_Tab,    view,           {0} },
+ 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+ 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+@@ -95,6 +97,7 @@ static Key keys[] = {
+ 	TAGKEYS(                        XK_7,                      6)
+ 	TAGKEYS(                        XK_8,                      7)
+ 	TAGKEYS(                        XK_9,                      8)
++    { MODKEY|ShiftMask,             XK_r,      self_restart,   {0} },
+ 	{ MODKEY|ShiftMask,             XK_q,      quit,           {.v = quitcmd } },
+ };
+ 
+diff --git a/dwm.c b/dwm.c
+index 976a058..63c4bc2 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -44,6 +44,7 @@
+ 
+ #include "drw.h"
+ #include "util.h"
++#include "arg.h"
+ 
+ /* macros */
+ #define BUTTONMASK              (ButtonPressMask|ButtonReleaseMask)
+@@ -68,13 +69,6 @@ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms *
+ enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
+        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
+ 
+-typedef union {
+-	int i;
+-	unsigned int ui;
+-	float f;
+-	const void *v;
+-} Arg;
+-
+ typedef struct {
+ 	unsigned int click;
+ 	unsigned int mask;
+diff --git a/selfrestart.c b/selfrestart.c
+new file mode 100644
+index 0000000..248a026
+--- /dev/null
++++ b/selfrestart.c
+@@ -0,0 +1,69 @@
++#include "selfrestart.h"
++
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <stdio.h>
++#include <stdlib.h>
++
++
++
++/**
++ * Magically finds the current's executable path
++ *
++ * I'm doing the do{}while(); trick because Linux (what I'm running) is not
++ * POSIX compilant and so lstat() cannot be trusted on /proc entries
++ *
++ * @return char* the path of the current executable
++ */
++char *get_dwm_path(){
++    struct stat s;
++    int r, length, rate = 42;
++    char *path = NULL;
++
++    if(lstat("/proc/self/exe", &s) == -1){
++        perror("lstat:");
++        return NULL;
++    }
++
++    length = s.st_size + 1 - rate;
++
++    do{
++        length+=rate;
++
++        free(path);
++        path = malloc(sizeof(char) * length);
++
++        if(path == NULL){
++            perror("malloc:");
++            return NULL;
++        }
++
++        r = readlink("/proc/self/exe", path, length);
++
++        if(r == -1){
++            perror("readlink:");
++            return NULL;
++        }
++    }while(r >= length);
++
++    path[r] = '\0';
++
++    return path;
++}
++
++/**
++ * self-restart
++ *
++ * Initially inspired by: Yu-Jie Lin
++ * https://sites.google.com/site/yjlnotes/notes/dwm
++ */
++void self_restart(const Arg *arg) {
++    char *const argv[] = {get_dwm_path(), NULL};
++
++    if(argv[0] == NULL){
++        return;
++    }
++
++    execv(argv[0], argv);
++}
+diff --git a/selfrestart.h b/selfrestart.h
+new file mode 100644
+index 0000000..b3a6e61
+--- /dev/null
++++ b/selfrestart.h
+@@ -0,0 +1,9 @@
++#ifndef __SELFRESTART_H_
++#define __SELFRESTART_H_
++
++#include "arg.h"
++
++void self_restart(const Arg *arg);
++char *get_dwm_path();
++
++#endif // __SELFRESTART_H_
+-- 
+2.26.2
+

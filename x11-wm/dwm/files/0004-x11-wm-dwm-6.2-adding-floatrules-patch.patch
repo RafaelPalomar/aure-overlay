@@ -1,7 +1,7 @@
 From 44f3d727ee4033ddfd18b1e2e90fd05ec73279f2 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Fri, 20 Nov 2020 21:21:28 +0100
-Subject: [PATCH 4/4] x11-wm/dwm-6.2: adding floatrules patch
+Subject: [PATCH 4/7] x11-wm/dwm-6.2: adding floatrules patch
 
 ---
  config.def.h |  7 ++++---

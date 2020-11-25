@@ -1,7 +1,7 @@
 From 2b3193cdf74de7b25bbd5cf02eac349a42eb5677 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Thu, 19 Nov 2020 13:26:16 +0100
-Subject: [PATCH 2/4] enable quit confirmation
+Subject: [PATCH 2/7] enable quit confirmation
 
 ---
  config.def.h |  3 ++-

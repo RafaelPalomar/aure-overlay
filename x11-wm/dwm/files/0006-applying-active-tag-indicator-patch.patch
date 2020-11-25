@@ -1,0 +1,30 @@
+From 000e63342ef7a752664771dd2fc60849f01fc67a Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Tue, 24 Nov 2020 15:07:27 +0100
+Subject: [PATCH 6/7] applying active tag indicator patch
+
+---
+ dwm.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/dwm.c b/dwm.c
+index cc6adc8..976a058 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -736,9 +736,10 @@ drawbar(Monitor *m)
+ 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
+ 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
+ 		if (occ & 1 << i)
+-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
+-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+-				urg & 1 << i);
++			drw_rect(drw, x + boxw, 0, w - ( 2 * boxw + 1), boxw,
++			    m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
++			    urg & 1 << i);
++
+ 		x += w;
+ 	}
+ 	w = blw = TEXTW(m->ltsymbol);
+-- 
+2.26.2
+

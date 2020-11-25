@@ -31,6 +31,9 @@ PATCHES=(
 	${FILESDIR}/0002-enable-quit-confirmation.patch
 	${FILESDIR}/0003-adding-autostart-patch.patch
 	${FILESDIR}/0004-x11-wm-dwm-6.2-adding-floatrules-patch.patch
+	${FILESDIR}/0005-adding-fontawesome-to-font-list.patch
+	${FILESDIR}/0006-applying-active-tag-indicator-patch.patch
+	${FILESDIR}/0007-adding-self-restart.patch
 )
 
 src_prepare() {
