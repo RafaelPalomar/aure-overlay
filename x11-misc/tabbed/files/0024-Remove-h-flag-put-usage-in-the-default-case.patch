@@ -1,0 +1,61 @@
+From eb0ff62120df6a5e87f26ba0b1e86bbaebeccb87 Mon Sep 17 00:00:00 2001
+From: Quentin Rameau <quinq@fifth.space>
+Date: Sun, 3 Jan 2016 13:01:32 +0100
+Subject: [PATCH 24/36] Remove h flag, put usage() in the default case
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.1 | 4 ----
+ tabbed.c | 6 +++---
+ 2 files changed, 3 insertions(+), 7 deletions(-)
+
+diff --git a/tabbed.1 b/tabbed.1
+index 593847e..874e306 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -5,7 +5,6 @@ tabbed \- generic tabbed interface
+ .B tabbed
+ .RB [ \-c ]
+ .RB [ \-d ]
+-.RB [ \-h ]
+ .RB [ \-s ]
+ .RB [ \-v ]
+ .RB [ \-g
+@@ -48,9 +47,6 @@ detaches tabbed from the terminal and prints its XID to stdout.
+ fill up tabbed again by spawning the provided command, when the last tab is
+ closed. Mutually exclusive with -c.
+ .TP
+-.B \-h
+-will print the usage of tabbed.
+-.TP
+ .BI \-g " geometry"
+ defines the X11 geometry string, which will fixate the height and width of
+ tabbed.
+diff --git a/tabbed.c b/tabbed.c
+index aa4d44d..5f035c0 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -1289,7 +1289,7 @@ xsettitle(Window w, const char *str)
+ void
+ usage(void)
+ {
+-	die("usage: %s [-dfhsv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
++	die("usage: %s [-dfsv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
+ 	    "       [-r narg] [-o color] [-O color] [-t color] [-T color]\n"
+ 	    "       [-u color] [-U color] command...\n", argv0);
+ }
+@@ -1355,9 +1355,9 @@ main(int argc, char *argv[])
+ 		die("tabbed-"VERSION", © 2009-2016 tabbed engineers, "
+ 		    "see LICENSE for details.\n");
+ 		break;
+-	default: /* FALLTHROUGH */
+-	case 'h':
++	default:
+ 		usage();
++		break;
+ 	} ARGEND;
+ 
+ 	if (argc < 1) {
+-- 
+2.26.2
+

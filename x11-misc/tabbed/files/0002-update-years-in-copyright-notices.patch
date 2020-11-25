@@ -1,0 +1,40 @@
+From 0120447e0417e9f52b5c2ae081f07f922a2ea9c2 Mon Sep 17 00:00:00 2001
+From: Markus Teich <markus.teich@stusta.mhn.de>
+Date: Tue, 21 Jan 2014 23:12:08 +0100
+Subject: [PATCH 02/36] update years in copyright notices
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ LICENSE  | 2 +-
+ tabbed.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/LICENSE b/LICENSE
+index add8a53..f5244dd 100644
+--- a/LICENSE
++++ b/LICENSE
+@@ -2,7 +2,7 @@ MIT/X Consortium License
+ 
+ © 2009-2011 Enno Boland <g s01 de>
+ © 2011 Connor Lane Smith <cls@lubutu.com>
+-© 2012 Christoph Lohmann <20h@r-36.net> 
++© 2012-2014 Christoph Lohmann <20h@r-36.net>
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+diff --git a/tabbed.c b/tabbed.c
+index 2c388ee..93a213a 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -1253,7 +1253,7 @@ main(int argc, char *argv[]) {
+ 		normfgcolor = EARGF(usage());
+ 		break;
+ 	case 'v':
+-		die("tabbed-"VERSION", © 2009-2012"
++		die("tabbed-"VERSION", © 2009-2014"
+ 			" tabbed engineers, see LICENSE"
+ 			" for details.\n");
+ 		break;
+-- 
+2.26.2
+

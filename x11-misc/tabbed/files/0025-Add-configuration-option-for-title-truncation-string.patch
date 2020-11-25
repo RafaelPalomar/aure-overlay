@@ -1,0 +1,56 @@
+From 8920c1ba196df53a8ca06c179a3aa3ee260a6935 Mon Sep 17 00:00:00 2001
+From: Quentin Rameau <quinq@fifth.space>
+Date: Mon, 4 Jan 2016 02:21:04 +0100
+Subject: [PATCH 25/36] Add configuration option for title truncation string
+
+Permit to use arbitrary string instead of "..." (ie "$") when truncating
+client title.
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ config.def.h | 1 +
+ tabbed.c     | 9 ++++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index 587ce73..9facec5 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -10,6 +10,7 @@ static const char* urgbgcolor   = "#111111";
+ static const char* urgfgcolor   = "#cc0000";
+ static const char before[]      = "<";
+ static const char after[]       = ">";
++static const char titletrim[]   = "...";
+ static const int  tabwidth      = 200;
+ static const Bool foreground    = True;
+ static       Bool urgentswitch  = False;
+diff --git a/tabbed.c b/tabbed.c
+index 5f035c0..eafbec8 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -369,7 +369,7 @@ drawbar(void)
+ void
+ drawtext(const char *text, unsigned long col[ColLast])
+ {
+-	int i, x, y, h, len, olen;
++	int i, j, x, y, h, len, olen;
+ 	char buf[256];
+ 	XRectangle r = { dc.x, dc.y, dc.w, dc.h };
+ 
+@@ -391,8 +391,11 @@ drawtext(const char *text, unsigned long col[ColLast])
+ 		return;
+ 
+ 	memcpy(buf, text, len);
+-	if (len < olen)
+-		for(i = len; i && i > len - 3; buf[--i] = '.');
++	if (len < olen) {
++		for (i = len, j = strlen(titletrim); j && i;
++		     buf[--i] = titletrim[--j])
++			;
++	}
+ 
+ 	XSetForeground(dpy, dc.gc, col[ColFG]);
+ 	if (dc.font.set)
+-- 
+2.26.2
+

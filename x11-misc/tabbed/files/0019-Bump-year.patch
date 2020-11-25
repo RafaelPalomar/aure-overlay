@@ -1,0 +1,25 @@
+From 7f6085d42a4d57d3c9b3ea85a516782f7e80d1fe Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Fri, 1 Jan 2016 14:19:10 +0100
+Subject: [PATCH 19/36] Bump year.
+
+---
+ tabbed.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index ba69f21..1c7fc6d 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -1307,7 +1307,7 @@ main(int argc, char *argv[]) {
+ 		urgfgcolor = EARGF(usage());
+ 		break;
+ 	case 'v':
+-		die("tabbed-"VERSION", © 2009-2014"
++		die("tabbed-"VERSION", © 2009-2015"
+ 			" tabbed engineers, see LICENSE"
+ 			" for details.\n");
+ 		break;
+-- 
+2.26.2
+

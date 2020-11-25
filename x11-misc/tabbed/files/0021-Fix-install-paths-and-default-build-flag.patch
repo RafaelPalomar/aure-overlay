@@ -1,0 +1,69 @@
+From 46887ac5505076f3a3907e3fd4a5e3ec00f29d63 Mon Sep 17 00:00:00 2001
+From: Quentin Rameau <quinq@fifth.space>
+Date: Sat, 2 Jan 2016 19:11:31 +0100
+Subject: [PATCH 21/36] Fix install paths and default build flag
+
+Ensure that paths are quoted.
+Compile with -Os by default.
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ Makefile  | 24 ++++++++++++------------
+ config.mk |  2 +-
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index acc3246..1b95d15 100644
+--- a/Makefile
++++ b/Makefile
+@@ -44,22 +44,22 @@ dist: clean
+ 
+ install: all
+ 	@echo installing executable files to ${DESTDIR}${PREFIX}/bin
+-	@mkdir -p ${DESTDIR}${PREFIX}/bin
+-	@cp -f ${BIN} ${DESTDIR}${PREFIX}/bin
+-	@chmod 755 ${DESTDIR}${PREFIX}/bin/tabbed
++	@mkdir -p "${DESTDIR}${PREFIX}/bin"
++	@cp -f ${BIN} "${DESTDIR}${PREFIX}/bin"
++	@chmod 755 "${DESTDIR}${PREFIX}/bin/tabbed"
+ 	@echo installing manual pages to ${DESTDIR}${MANPREFIX}/man1
+-	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
+-	@sed "s/VERSION/${VERSION}/g" < tabbed.1 > ${DESTDIR}${MANPREFIX}/man1/tabbed.1
+-	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/tabbed.1
+-	@sed "s/VERSION/${VERSION}/g" < xembed.1 > ${DESTDIR}${MANPREFIX}/man1/xembed.1
+-	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/xembed.1
++	@mkdir -p "${DESTDIR}${MANPREFIX}/man1"
++	@sed "s/VERSION/${VERSION}/g" < tabbed.1 > "${DESTDIR}${MANPREFIX}/man1/tabbed.1"
++	@chmod 644 "${DESTDIR}${MANPREFIX}/man1/tabbed.1"
++	@sed "s/VERSION/${VERSION}/g" < xembed.1 > "${DESTDIR}${MANPREFIX}/man1/xembed.1"
++	@chmod 644 "${DESTDIR}${MANPREFIX}/man1/xembed.1"
+ 
+ uninstall:
+ 	@echo removing executable files from ${DESTDIR}${PREFIX}/bin
+-	@rm -f ${DESTDIR}${PREFIX}/bin/tabbed
+-	@rm -f ${DESTDIR}${PREFIX}/bin/xembed
++	@rm -f "${DESTDIR}${PREFIX}/bin/tabbed"
++	@rm -f "${DESTDIR}${PREFIX}/bin/xembed"
+ 	@echo removing manual pages from ${DESTDIR}${MANPREFIX}/man1
+-	@rm -f ${DESTDIR}${MANPREFIX}/man1/tabbed.1
+-	@rm -f ${DESTDIR}${MANPREFIX}/man1/xembed.1
++	@rm -f "${DESTDIR}${MANPREFIX}/man1/tabbed.1"
++	@rm -f "${DESTDIR}${MANPREFIX}/man1/xembed.1"
+ 
+ .PHONY: all options clean dist install uninstall
+diff --git a/config.mk b/config.mk
+index dd741e4..ad0dfb2 100644
+--- a/config.mk
++++ b/config.mk
+@@ -13,7 +13,7 @@ LIBS = -L/usr/lib -lc -lX11
+ 
+ # flags
+ CPPFLAGS = -DVERSION=\"${VERSION}\" -D_DEFAULT_SOURCE
+-CFLAGS = -std=c99 -pedantic -Wall -O0 ${INCS} ${CPPFLAGS}
++CFLAGS = -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
+ LDFLAGS = -s ${LIBS}
+ 
+ # Solaris
+-- 
+2.26.2
+

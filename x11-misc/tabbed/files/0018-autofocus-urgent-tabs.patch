@@ -1,0 +1,111 @@
+From 9d4b71ecadd5b3c2c777b273fa4d2c0cc0c3a464 Mon Sep 17 00:00:00 2001
+From: Jonas Rabenstein <jonas.rabenstein@studium.uni-erlangen.de>
+Date: Wed, 19 Aug 2015 21:11:16 +0200
+Subject: [PATCH 18/36] autofocus urgent tabs
+
+When tabbed becomes urgent because one of it tabs becomes urgent, it
+may be desireable to automatically focus that tab. As a notification may
+be lost, if another notification comes in before you focused tabbed, the
+switch is only done, if tabbed is not urgent already.
+Moreover, it may be anoying, if you just type into one tab, another tab
+gets urgent -therfore focused- and you type into the other tab, you may
+switch between autofocus and nofocus using Ctrl-Shift-u.
+Maybe it would also be usefull, if there would be an commandline
+parameter to toggle that option, but as -u is already used for
+urgent-tab-color, i did not implement that.
+
+Signed-off-by: Jonas Rabenstein <jonas.rabenstein@studium.uni-erlangen.de>
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ config.def.h |  2 ++
+ tabbed.1     |  3 +++
+ tabbed.c     | 23 +++++++++++++++++++----
+ 3 files changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index 55bec4c..41f39c3 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -12,6 +12,7 @@ static const char before[]      = "<";
+ static const char after[]       = ">";
+ static const int  tabwidth      = 200;
+ static const Bool foreground    = True;
++static       Bool urgentswitch  = False;
+ 
+ /*
+  * Where to place a new tab when it is opened. When npisrelative is True,
+@@ -56,6 +57,7 @@ static Key keys[] = { \
+ 	{ MODKEY,                       XK_q,      killclient,     { 0 } },
+ 
+ 	{ MODKEY,                       XK_u,      focusurgent,    { .v = NULL } },
++	{ MODKEY|ShiftMask,             XK_u,      toggle,         { .v = (void*) &urgentswitch } },
+ 
+ 	{ 0,                            XK_F11,    fullscreen,     { 0 } },
+ };
+diff --git a/tabbed.1 b/tabbed.1
+index 05ac355..593847e 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -124,6 +124,9 @@ move selected tab one to the left
+ .B Ctrl\-Shift\-k
+ move selected tab one to the right
+ .TP
++.B Ctrl\-Shift\-u
++toggle autofocus of urgent tabs
++.TP
+ .B Ctrl\-Tab
+ toggle between the selected and last selected tab
+ .TP
+diff --git a/tabbed.c b/tabbed.c
+index 93c9d0f..ba69f21 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -129,6 +129,7 @@ static void setcmd(int argc, char *argv[], int);
+ static void sigchld(int unused);
+ static void spawn(const Arg *arg);
+ static int textnw(const char *text, unsigned int len);
++static void toggle(const Arg *arg);
+ static void unmanage(int c);
+ static void updatenumlockmask(void);
+ static void updatetitle(int c);
+@@ -837,12 +838,21 @@ propertynotify(const XEvent *e) {
+ 			&& (c = getclient(ev->window)) > -1
+ 			&& (wmh = XGetWMHints(dpy, clients[c]->win))) {
+ 		if(wmh->flags & XUrgencyHint) {
++			XFree(wmh);
++			wmh = XGetWMHints(dpy, win);
+ 			if(c != sel) {
+-				clients[c]->urgent = True;
+-				drawbar();
++				if(urgentswitch && wmh && !(wmh->flags & XUrgencyHint)) {
++					/* only switch, if tabbed was focused since last urgency hint
++					 * if WMHints could not be received, default to no switch */
++					focus(c);
++				} else {
++					/* if no switch should be performed, mark tab as urgent */
++					clients[c]->urgent = True;
++					drawbar();
++				}
+ 			}
+-			XFree(wmh);
+-			if((wmh = XGetWMHints(dpy, win))) {
++			if(wmh && !(wmh->flags & XUrgencyHint)) {
++				/* update tabbed urgency hint if not set already */
+ 				wmh->flags |= XUrgencyHint;
+ 				XSetWMHints(dpy, win, wmh);
+ 			}
+@@ -1093,6 +1103,11 @@ textnw(const char *text, unsigned int len) {
+ 	return XTextWidth(dc.font.xfont, text, len);
+ }
+ 
++void
++toggle(const Arg *arg) {
++    *(Bool*) arg->v = !*(Bool*) arg->v;
++}
++
+ void
+ unmanage(int c) {
+ 	if(c < 0 || c >= nclients) {
+-- 
+2.26.2
+

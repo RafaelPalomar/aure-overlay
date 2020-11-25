@@ -1,0 +1,86 @@
+From 55dc32b27b73c121cab18009bf087e95ef3d9c18 Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Sat, 9 May 2015 21:06:00 +0200
+Subject: [PATCH 16/36] Fixing some manpage formatting and formatting in
+ xembed.c.
+
+---
+ tabbed.1 | 14 ++++++++------
+ xembed.c |  4 ++--
+ 2 files changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/tabbed.1 b/tabbed.1
+index ec6e0b2..9e32115 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -13,7 +13,7 @@ tabbed \- generic tabbed interface
+ .RB [ \-n
+ .IR name ]
+ .RB [ \-p
+-.IR [ s +/- ] pos ]
++.RB [ s {+/-} ] \fIpos\fR ]
+ .RB [ \-o
+ .IR normbgcol ]
+ .RB [ \-O
+@@ -28,7 +28,7 @@ tabbed \- generic tabbed interface
+ .IR urgfgcol ]
+ .RB [ \-r
+ .IR narg ]
+-.IR [ command ... ]
++.RI [ "command ..." ]
+ .SH DESCRIPTION
+ .B tabbed
+ is a simple tabbed container for applications which support XEmbed. Tabbed
+@@ -54,7 +54,9 @@ will print the usage of tabbed.
+ .BI \-g " geometry"
+ defines the X11 geometry string, which will fixate the height and width of
+ tabbed.
+-Them form is [=][<width>{xX}<height>][{+-}<xoffset>{+-}<yoffset>]. See
++The syntax is
++.RI [=][ width {xX} height ][{+-} xoffset {+-} yoffset ].
++See
+ .BR XParseGeometry (3)
+ for further details.
+ .TP
+@@ -62,7 +64,7 @@ for further details.
+ will set the WM_CLASS attribute to
+ .I name.
+ .TP
+-.BI \-p " [ s +/-] pos"
++.BR \-p " [" s {+-}] \fIpos\fR
+ will set the absolute or relative position of where to start a new tab. When
+ .I pos
+ is is given without 's' in front it is an absolute position. Then negative
+@@ -84,8 +86,8 @@ will disable automatic spawning of the command.
+ .TP
+ .BI \-o " normbgcol"
+ defines the normal background color.
+-.IR #RGB ,
+-.IR #RRGGBB ,
++.RI # RGB ,
++.RI # RRGGBB ,
+ and X color names are supported.
+ .TP
+ .BI \-O " normfgcol"
+diff --git a/xembed.c b/xembed.c
+index 0b36603..33e8d92 100644
+--- a/xembed.c
++++ b/xembed.c
+@@ -33,8 +33,7 @@ main(int argc, char **argv)
+ 	if(pgrp == tcpgrp) { /* in foreground of tty */
+ 		argv[0] = argv[2];
+ 		argv[2] = xembed;
+-	}
+-	else {
++	} else {
+ noembed:
+ 		argv += 2;
+ 	}
+@@ -44,3 +43,4 @@ noembed:
+ 	perror(argv[0]); /* failed to execute */
+ 	return 1;
+ }
++
+-- 
+2.26.2
+

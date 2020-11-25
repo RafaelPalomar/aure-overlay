@@ -1,0 +1,38 @@
+From b5f9ec647aae2d9a1d3bd586eb7523a4e0a329a3 Mon Sep 17 00:00:00 2001
+From: Lucas Gabriel Vuotto <lvuotto92@gmail.com>
+Date: Sat, 10 Mar 2018 02:44:39 -0300
+Subject: [PATCH 35/36] Add OpenBSD support to config.mk
+
+Signed-off-by: Lucas Gabriel Vuotto <lgv@nanashi.co>
+---
+ config.mk | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/config.mk b/config.mk
+index 3a71529..29caa84 100644
+--- a/config.mk
++++ b/config.mk
+@@ -7,9 +7,18 @@ VERSION = 0.6
+ PREFIX = /usr/local
+ MANPREFIX = ${PREFIX}/share/man
+ 
++X11INC = /usr/X11R6/include
++X11LIB = /usr/X11R6/lib
++
++# freetype
++FREETYPELIBS = -lfontconfig -lXft
++FREETYPEINC = /usr/include/freetype2
++# OpenBSD (uncomment)
++#FREETYPEINC = ${X11INC}/freetype2
++
+ # includes and libs
+-INCS = -I. -I/usr/include -I/usr/include/freetype2
+-LIBS = -L/usr/lib -lc -lX11 -lfontconfig -lXft
++INCS = -I. -I/usr/include -I$(X11INC) -I${FREETYPEINC}
++LIBS = -L/usr/lib -lc -L${X11LIB} -lX11 ${FREETYPELIBS}
+ 
+ # flags
+ CPPFLAGS = -DVERSION=\"${VERSION}\" -D_DEFAULT_SOURCE
+-- 
+2.26.2
+

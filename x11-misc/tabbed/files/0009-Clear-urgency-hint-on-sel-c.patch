@@ -1,0 +1,51 @@
+From b4fed5a100f2fe50cb7caa33e6d58edebe1e7f80 Mon Sep 17 00:00:00 2001
+From: Peter Hofmann <scm@uninformativ.de>
+Date: Sat, 21 Jun 2014 07:46:26 +0200
+Subject: [PATCH 09/36] Clear urgency hint on sel == c
+
+ - Run "tabbed xterm -into".
+ - Open a new tab using Ctrl+Shift+Enter, switch to it using Ctrl+Tab.
+ - Run "sleep 2; printf '\a'".
+ - Quickly change back to the first tab (c = 0) and wait for the second
+   one (c = 1) to get the urgency hint.
+ - Close the first tab using Ctrl+Q or Ctrl+D. This sets sel = 0 and c =
+   0, so focus() won't touch the urgency hint.
+ - Now, the urgency hint on the second tab has not been cleared. Open a
+   new tab to verify it.
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index ba22f9a..6a2264f 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -452,16 +452,16 @@ focus(int c) {
+ 	sendxembed(c, XEMBED_WINDOW_ACTIVATE, 0, 0, 0);
+ 	xsettitle(win, clients[c]->name);
+ 
+-	/* If sel is already c, change nothing. */
+ 	if(sel != c) {
+ 		lastsel = sel;
+ 		sel = c;
+-		if(clients[c]->urgent && (wmh = XGetWMHints(dpy, clients[c]->win))) {
+-			wmh->flags &= ~XUrgencyHint;
+-			XSetWMHints(dpy, clients[c]->win, wmh);
+-			clients[c]->urgent = False;
+-			XFree(wmh);
+-		}
++	}
++
++	if(clients[c]->urgent && (wmh = XGetWMHints(dpy, clients[c]->win))) {
++		wmh->flags &= ~XUrgencyHint;
++		XSetWMHints(dpy, clients[c]->win, wmh);
++		clients[c]->urgent = False;
++		XFree(wmh);
+ 	}
+ 
+ 	drawbar();
+-- 
+2.26.2
+

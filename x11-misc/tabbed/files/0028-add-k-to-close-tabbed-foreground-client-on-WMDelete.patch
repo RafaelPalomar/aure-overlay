@@ -1,0 +1,71 @@
+From 95b46cd3a92cab0a9b18cabb911e11f7300c0e1a Mon Sep 17 00:00:00 2001
+From: Justin Keogh <suckless@v6y.net>
+Date: Mon, 21 Mar 2016 02:16:12 +0000
+Subject: [PATCH 28/36] add -k to close tabbed foreground client on WMDelete
+
+Hello, this is useful when you want to use the same key binding that closes windows to close tabs. I got tired of loosing my tabbed/surf session when I hit my WM's close key. "Last tab" behavior still respects -c/-f.
+
+Cheers
+-J
+
+From 829e95855f0fe78a368788a5e72231bd6456a8cf Mon Sep 17 00:00:00 2001
+From: jakeogh <github.com@v6y.net>
+Date: Mon, 21 Mar 2016 01:36:28 +0000
+Subject: [PATCH] add -k to close foreground tabbed client on WM_DELETE_WINDOW
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index a9050ae..9a44795 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -155,7 +155,8 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
+ static int bh, wx, wy, ww, wh;
+ static unsigned int numlockmask;
+ static Bool running = True, nextfocus, doinitspawn = True,
+-            fillagain = False, closelastclient = False;
++            fillagain = False, closelastclient = False,
++            killclientsfirst = False;
+ static Display *dpy;
+ static DC dc;
+ static Atom wmatom[WMLast];
+@@ -236,8 +237,13 @@ clientmessage(const XEvent *e)
+ 	const XClientMessageEvent *ev = &e->xclient;
+ 
+ 	if (ev->message_type == wmatom[WMProtocols] &&
+-	    ev->data.l[0] == wmatom[WMDelete])
++	    ev->data.l[0] == wmatom[WMDelete]) {
++		if (nclients > 1 && killclientsfirst) {
++			killclient(0);
++			return;
++		}
+ 		running = False;
++	}
+ }
+ 
+ void
+@@ -1247,7 +1253,7 @@ xsettitle(Window w, const char *str)
+ void
+ usage(void)
+ {
+-	die("usage: %s [-dfsv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
++	die("usage: %s [-dfksv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
+ 	    "       [-r narg] [-o color] [-O color] [-t color] [-T color]\n"
+ 	    "       [-u color] [-U color] command...\n", argv0);
+ }
+@@ -1273,6 +1279,9 @@ main(int argc, char *argv[])
+ 	case 'g':
+ 		geometry = EARGF(usage());
+ 		break;
++	case 'k':
++		killclientsfirst = True;
++		break;
+ 	case 'n':
+ 		wmname = EARGF(usage());
+ 		break;
+-- 
+2.26.2
+

@@ -1,0 +1,26 @@
+From a327374a23abf7f75a8a149c4f333cc49d17b07e Mon Sep 17 00:00:00 2001
+From: Lucas Gabriel Vuotto <lvuotto92@gmail.com>
+Date: Sat, 10 Mar 2018 02:44:38 -0300
+Subject: [PATCH 34/36] Embed dmenu in tabbed own window
+
+Signed-off-by: Lucas Gabriel Vuotto <lgv@nanashi.co>
+---
+ config.def.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config.def.h b/config.def.h
+index 2d23049..defa426 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -27,7 +27,7 @@ static Bool npisrelative  = False;
+         .v = (char *[]){ "/bin/sh", "-c", \
+                 "prop=\"`xwininfo -children -id $1 | grep '^     0x' |" \
+                 "sed -e's@^ *\\(0x[0-9a-f]*\\) \"\\([^\"]*\\)\".*@\\1 \\2@' |" \
+-                "xargs -0 printf %b | dmenu -l 10`\" &&" \
++                "xargs -0 printf %b | dmenu -l 10 -w $1`\" &&" \
+                 "xprop -id $1 -f $0 8s -set $0 \"$prop\"", \
+                 p, winid, NULL \
+         } \
+-- 
+2.26.2
+

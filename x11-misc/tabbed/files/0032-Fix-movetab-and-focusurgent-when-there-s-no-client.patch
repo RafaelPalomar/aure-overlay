@@ -1,0 +1,43 @@
+From 6dc3978edf56ef6760ed818e29eb920138b09802 Mon Sep 17 00:00:00 2001
+From: Caleb Malchik <cmalchik@gmail.com>
+Date: Sun, 7 May 2017 18:08:37 -0700
+Subject: [PATCH 32/36] Fix movetab and focusurgent when there's no client
+
+Accessing those would crash with a floating point exception.
+---
+ tabbed.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index 6321575..ff3ada0 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -502,6 +502,9 @@ focusurgent(const Arg *arg)
+ {
+ 	int c;
+ 
++	if (sel < 0)
++		return;
++
+ 	for (c = (sel + 1) % nclients; c != sel; c = (c + 1) % nclients) {
+ 		if (clients[c]->urgent) {
+ 			focus(c);
+@@ -785,11 +788,14 @@ movetab(const Arg *arg)
+ 	int c;
+ 	Client *new;
+ 
++	if (sel < 0)
++		return;
++
+ 	c = (sel + arg->i) % nclients;
+ 	if (c < 0)
+ 		c += nclients;
+ 
+-	if (sel < 0 || c == sel)
++	if (c == sel)
+ 		return;
+ 
+ 	new = clients[sel];
+-- 
+2.26.2
+

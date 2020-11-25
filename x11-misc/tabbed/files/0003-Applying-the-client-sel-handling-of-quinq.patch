@@ -1,0 +1,29 @@
+From 4b2dfb110f4c2698ab27ea6ad2f6f2e914631b9f Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Sun, 26 Jan 2014 18:48:52 +0100
+Subject: [PATCH 03/36] Applying the client sel handling of quinq.
+
+When after unmanaging the the last selected client was unmanaged, select the
+last client.
+---
+ tabbed.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index 93a213a..5bc2b53 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -1089,8 +1089,8 @@ unmanage(int c) {
+ 			spawn(NULL);
+ 		}
+ 	} else {
+-		if(c == lastsel) {
+-			lastsel = -1;
++		if(c && lastsel >= nclients) {
++			lastsel = nclients - 1;
+ 		} else if(lastsel > c) {
+ 			lastsel--;
+ 		}
+-- 
+2.26.2
+

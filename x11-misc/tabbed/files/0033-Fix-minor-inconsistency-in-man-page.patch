@@ -1,0 +1,25 @@
+From bbcdf1544c1b602dc8a1525ccce513ecbc40392d Mon Sep 17 00:00:00 2001
+From: Alessandro Caputo <nonedisponibile@gmail.com>
+Date: Thu, 28 Sep 2017 15:36:12 +0200
+Subject: [PATCH 33/36] Fix minor inconsistency in man page
+
+---
+ tabbed.1 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tabbed.1 b/tabbed.1
+index bc28b8c..07bdbd7 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -131,7 +131,7 @@ toggle autofocus of urgent tabs
+ .B Ctrl\-Tab
+ toggle between the selected and last selected tab
+ .TP
+-.B Ctrl\-t
++.B Ctrl\-`
+ open dmenu to either create a new tab appending the entered string or select
+ an already existing tab.
+ .TP
+-- 
+2.26.2
+

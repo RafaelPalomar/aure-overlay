@@ -1,0 +1,35 @@
+From bc236142fa72d2f9d6b5c790d3f3a9a9168a7164 Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Mon, 25 Apr 2016 13:53:12 +0200
+Subject: [PATCH 29/36] The forgotten half of the last patch.
+
+---
+ tabbed.1 | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tabbed.1 b/tabbed.1
+index 874e306..bc28b8c 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -5,6 +5,7 @@ tabbed \- generic tabbed interface
+ .B tabbed
+ .RB [ \-c ]
+ .RB [ \-d ]
++.RB [ \-k ]
+ .RB [ \-s ]
+ .RB [ \-v ]
+ .RB [ \-g
+@@ -56,6 +57,10 @@ See
+ .BR XParseGeometry (3)
+ for further details.
+ .TP
++.B \-k
++close foreground tabbed client (instead of tabbed and all clients) when
++WM_DELETE_WINDOW is sent.
++.TP
+ .BI \-n " name"
+ will set the WM_CLASS attribute to
+ .I name.
+-- 
+2.26.2
+

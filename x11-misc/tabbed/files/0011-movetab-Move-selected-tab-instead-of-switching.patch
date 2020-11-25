@@ -1,0 +1,56 @@
+From 829980f28aa91f4837e047bd9e3b599bf6d655a6 Mon Sep 17 00:00:00 2001
+From: Markus Teich <markus.teich@stusta.mhn.de>
+Date: Tue, 7 Oct 2014 17:15:59 +0200
+Subject: [PATCH 11/36] movetab(): Move selected tab instead of switching
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Before this patch, movetab() just switched positions of the selected tab with
+the new position. This resulted in unexpected behaviour when „moving“ a tab over
+one end of the list.
+
+Now tabs are moved correctly by the specified amount of indizes.
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index 68281ac..cdd6bd3 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -795,19 +795,19 @@ movetab(const Arg *arg) {
+ 	int c;
+ 	Client *new;
+ 
+-	if(sel < 0 || (arg->i == 0))
+-		return;
+-
+-	c = sel + arg->i;
+-	while(c >= nclients)
+-		c -= nclients;
+-	while(c < 0)
++	c = (sel + arg->i) % nclients;
++	if(c < 0)
+ 		c += nclients;
+ 
+-	new = clients[c];
+-	clients[c] = clients[sel];
+-	clients[sel] = new;
++	if(sel < 0 || (c == sel))
++		return;
+ 
++	new = clients[sel];
++	if(sel < c)
++		memmove(&clients[sel], &clients[sel+1], sizeof(Client *) * (c - sel));
++	else
++		memmove(&clients[c+1], &clients[c], sizeof(Client *) * (sel - c));
++	clients[c] = new;
+ 	sel = c;
+ 
+ 	drawbar();
+-- 
+2.26.2
+

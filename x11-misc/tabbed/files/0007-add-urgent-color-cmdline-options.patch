@@ -1,0 +1,112 @@
+From c778de59e30fd65556209623aec5f8544a3e0e2f Mon Sep 17 00:00:00 2001
+From: Markus Teich <markus.teich@stusta.mhn.de>
+Date: Wed, 14 May 2014 01:50:10 +0200
+Subject: [PATCH 07/36] add urgent color cmdline options
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.1 | 26 ++++++++++++++++++--------
+ tabbed.c | 13 ++++++++++---
+ 2 files changed, 28 insertions(+), 11 deletions(-)
+
+diff --git a/tabbed.1 b/tabbed.1
+index 177eacd..83af311 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -14,14 +14,18 @@ tabbed \- generic tabbed interface
+ .IR name ]
+ .RB [ \-p
+ .IR [ s +/- ] pos ]
++.RB [ \-o
++.IR normbgcol ]
++.RB [ \-O
++.IR normfgcol ]
+ .RB [ \-t
+ .IR selbgcol ]
+ .RB [ \-T
+ .IR selfgcol ]
+ .RB [ \-u
+-.IR normbgcol ]
++.IR urgbgcol ]
+ .RB [ \-U
+-.IR normfgcol ]
++.IR urgfgcol ]
+ .RB [ \-r
+ .IR narg ]
+ .IR [ command ... ]
+@@ -78,20 +82,26 @@ with the window id, rather than appending it to the end.
+ .B \-s
+ will disable automatic spawning of the command.
+ .TP
+-.BI \-t " selbgcol"
+-defines the selected background color.
++.BI \-o " normbgcol"
++defines the normal background color.
+ .IR #RGB ,
+ .IR #RRGGBB ,
+ and X color names are supported.
+ .TP
++.BI \-O " normfgcol"
++defines the normal foreground color.
++.TP
++.BI \-t " selbgcol"
++defines the selected background color.
++.TP
+ .BI \-T " selfgbcol"
+ defines the selected foreground color.
+ .TP
+-.BI \-u " normbgcol"
+-defines the normal background color.
++.BI \-u " urgbgcol"
++defines the urgent background color.
+ .TP
+-.BI \-U " normfgcol"
+-defines the normal foreground color.
++.BI \-U " urgfgbcol"
++defines the urgent foreground color.
+ .TP
+ .B \-v
+ prints version information to stderr, then exits.
+diff --git a/tabbed.c b/tabbed.c
+index d2900f2..2341998 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -1218,7 +1218,8 @@ char *argv0;
+ void
+ usage(void) {
+ 	die("usage: %s [-dfhsv] [-g geometry] [-n name] [-p [s+/-]pos] [-r narg] "
+-		"[-u color] [-U color] [-t color] [-T color] command...\n", argv0);
++		"[-o color] [-O color] [-t color] [-T color] [-u color] [-U color] "
++		"command...\n", argv0);
+ }
+ 
+ int
+@@ -1259,6 +1260,12 @@ main(int argc, char *argv[]) {
+ 	case 's':
+ 		doinitspawn = False;
+ 		break;
++	case 'o':
++		normbgcolor = EARGF(usage());
++		break;
++	case 'O':
++		normfgcolor = EARGF(usage());
++		break;
+ 	case 't':
+ 		selbgcolor = EARGF(usage());
+ 		break;
+@@ -1266,10 +1273,10 @@ main(int argc, char *argv[]) {
+ 		selfgcolor = EARGF(usage());
+ 		break;
+ 	case 'u':
+-		normbgcolor = EARGF(usage());
++		urgbgcolor = EARGF(usage());
+ 		break;
+ 	case 'U':
+-		normfgcolor = EARGF(usage());
++		urgfgcolor = EARGF(usage());
+ 		break;
+ 	case 'v':
+ 		die("tabbed-"VERSION", © 2009-2014"
+-- 
+2.26.2
+

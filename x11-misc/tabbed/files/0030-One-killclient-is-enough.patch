@@ -1,0 +1,24 @@
+From 00c414320256b700752f9352f10563cc2dfa3adf Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Wed, 8 Feb 2017 13:54:20 +0100
+Subject: [PATCH 30/36] One killclient() is enough.
+
+---
+ tabbed.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index 9a44795..6321575 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -217,7 +217,6 @@ cleanup(void)
+ 	for (i = 0; i < nclients; i++) {
+ 		focus(i);
+ 		killclient(NULL);
+-		killclient(NULL);
+ 		XReparentWindow(dpy, clients[i]->win, root, 0, 0);
+ 		unmanage(i);
+ 	}
+-- 
+2.26.2
+

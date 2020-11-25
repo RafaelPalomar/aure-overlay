@@ -1,0 +1,60 @@
+From 5c560f3784971b1a3bbfc7d18af759778f7779d1 Mon Sep 17 00:00:00 2001
+From: Okan Demirmen <okan@demirmen.com>
+Date: Wed, 10 Sep 2014 13:50:34 -0400
+Subject: [PATCH 10/36] tabbed: UnmapNotify patch
+
+Hi,
+
+Simple patch for tabbed that prevents tabbed from killing a client that it
+should no longer be managing due to an UnmapNotify event.
+
+Add support for UnmapNotify; allows a window to map and unmap without
+needing it to be destroyed.
+
+Thanks,
+Okan
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/tabbed.c b/tabbed.c
+index 6a2264f..68281ac 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -93,6 +93,7 @@ static void clientmessage(const XEvent *e);
+ static void configurenotify(const XEvent *e);
+ static void configurerequest(const XEvent *e);
+ static void createnotify(const XEvent *e);
++static void unmapnotify(const XEvent *e);
+ static void destroynotify(const XEvent *e);
+ static void die(const char *errstr, ...);
+ static void drawbar(void);
+@@ -141,6 +142,7 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
+ 	[ConfigureNotify] = configurenotify,
+ 	[ConfigureRequest] = configurerequest,
+ 	[CreateNotify] = createnotify,
++	[UnmapNotify] = unmapnotify,
+ 	[DestroyNotify] = destroynotify,
+ 	[Expose] = expose,
+ 	[FocusIn] = focusin,
+@@ -285,6 +287,15 @@ createnotify(const XEvent *e) {
+ 		manage(ev->window);
+ }
+ 
++void
++unmapnotify(const XEvent *e) {
++	const XUnmapEvent *ev = &e->xunmap;
++	int c;
++
++	if((c = getclient(ev->window)) > -1)
++		unmanage(c);
++}
++
+ void
+ destroynotify(const XEvent *e) {
+ 	const XDestroyWindowEvent *ev = &e->xdestroywindow;
+-- 
+2.26.2
+

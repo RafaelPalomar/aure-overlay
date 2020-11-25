@@ -1,0 +1,59 @@
+From 9d1d6d9409df1a7045806c1e802d89d08b0ae0a7 Mon Sep 17 00:00:00 2001
+From: noname <noname@inventati.org>
+Date: Sat, 24 May 2014 23:09:56 +0400
+Subject: [PATCH 08/36] Replace emallocz with ecalloc.
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ tabbed.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index 2341998..ba22f9a 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -97,7 +97,7 @@ static void destroynotify(const XEvent *e);
+ static void die(const char *errstr, ...);
+ static void drawbar(void);
+ static void drawtext(const char *text, unsigned long col[ColLast]);
+-static void *emallocz(size_t size);
++static void *ecalloc(size_t n, size_t size);
+ static void *erealloc(void *o, size_t size);
+ static void expose(const XEvent *e);
+ static void focus(int c);
+@@ -399,11 +399,11 @@ drawtext(const char *text, unsigned long col[ColLast]) {
+ }
+ 
+ void *
+-emallocz(size_t size) {
++ecalloc(size_t n, size_t size) {
+ 	void *p;
+ 
+-	if(!(p = calloc(1, size)))
+-		die("tabbed: cannot malloc\n");
++	if(!(p = calloc(n, size)))
++		die("tabbed: cannot calloc\n");
+ 	return p;
+ }
+ 
+@@ -713,7 +713,7 @@ manage(Window w) {
+ 			}
+ 		}
+ 
+-		c = emallocz(sizeof(*c));
++		c = ecalloc(1, sizeof *c);
+ 		c->win = w;
+ 
+ 		nclients++;
+@@ -921,7 +921,7 @@ void
+ setcmd(int argc, char *argv[], int replace) {
+ 	int i;
+ 
+-	cmd = emallocz((argc+3) * sizeof(*cmd));
++	cmd = ecalloc(argc + 3, sizeof *cmd);
+ 	if (argc == 0)
+ 		return;
+ 	for(i = 0; i < argc; i++)
+-- 
+2.26.2
+

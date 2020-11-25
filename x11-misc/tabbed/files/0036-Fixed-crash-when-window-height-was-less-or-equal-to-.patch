@@ -1,0 +1,77 @@
+From dabf6a25ab01107fc1e0464ee6a3e369d1626f97 Mon Sep 17 00:00:00 2001
+From: mikau <mikau@aaathats3as.com>
+Date: Tue, 12 May 2020 17:09:01 +0200
+Subject: [PATCH 36/36] Fixed crash when window height was less or equal to bar
+ height
+
+When resizing, the embedded client is being resized to (height = wh - bh),
+which is (<= 0) if (wh <= bh). This generates a BadValue Error leading to a
+crash.  This patch fixes that by hiding the tab bar if the window height is too
+small, and also sets a min_height WM hint to prevent that situation from
+happening in the first place.
+---
+ tabbed.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index ff3ada0..eafe28a 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -152,7 +152,7 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
+ 	[MapRequest] = maprequest,
+ 	[PropertyNotify] = propertynotify,
+ };
+-static int bh, wx, wy, ww, wh;
++static int bh, obh, wx, wy, ww, wh;
+ static unsigned int numlockmask;
+ static Bool running = True, nextfocus, doinitspawn = True,
+             fillagain = False, closelastclient = False,
+@@ -256,6 +256,15 @@ configurenotify(const XEvent *e)
+ 		XFreePixmap(dpy, dc.drawable);
+ 		dc.drawable = XCreatePixmap(dpy, root, ww, wh,
+ 		              DefaultDepth(dpy, screen));
++
++		if (!obh && (wh <= bh)) {
++			obh = bh;
++			bh = 0;
++		} else if (!bh && (wh > obh)) {
++			bh = obh;
++			obh = 0;
++		}
++
+ 		if (sel > -1)
+ 			resize(sel, ww, wh - bh);
+ 		XSync(dpy, False);
+@@ -872,7 +881,7 @@ resize(int c, int w, int h)
+ 	XWindowChanges wc;
+ 
+ 	ce.x = 0;
+-	ce.y = bh;
++	ce.y = wc.y = bh;
+ 	ce.width = wc.width = w;
+ 	ce.height = wc.height = h;
+ 	ce.type = ConfigureNotify;
+@@ -883,7 +892,7 @@ resize(int c, int w, int h)
+ 	ce.override_redirect = False;
+ 	ce.border_width = 0;
+ 
+-	XConfigureWindow(dpy, clients[c]->win, CWWidth | CWHeight, &wc);
++	XConfigureWindow(dpy, clients[c]->win, CWY | CWWidth | CWHeight, &wc);
+ 	XSendEvent(dpy, clients[c]->win, False, StructureNotifyMask,
+ 	           (XEvent *)&ce);
+ }
+@@ -1046,9 +1055,10 @@ setup(void)
+ 
+ 	size_hint = XAllocSizeHints();
+ 	if (!isfixed) {
+-		size_hint->flags = PSize;
++		size_hint->flags = PSize | PMinSize;
+ 		size_hint->height = wh;
+ 		size_hint->width = ww;
++		size_hint->min_height = bh + 1;
+ 	} else {
+ 		size_hint->flags = PMaxSize | PMinSize;
+ 		size_hint->min_width = size_hint->max_width = ww;
+-- 
+2.26.2
+

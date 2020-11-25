@@ -1,0 +1,210 @@
+From d60069a3e7a9e382f3221f8e405ad8c05abeea20 Mon Sep 17 00:00:00 2001
+From: Connor Lane Smith <cls@lubutu.com>
+Date: Wed, 6 May 2015 17:46:10 +0100
+Subject: [PATCH 15/36] add xembed wrapper utility
+
+xembed will cause a command to attempt to XEmbed into the window given
+by the environment variable XEMBED, so long as it is in the foreground
+of its controlling terminal. This causes a process to effectively take
+the place of the terminal window, unless it is backgrounded.
+
+Signed-off-by: Christoph Lohmann <20h@r-36.net>
+---
+ LICENSE  |  4 ++--
+ Makefile | 25 +++++++++++++++----------
+ tabbed.1 |  4 ++--
+ xembed.1 | 35 +++++++++++++++++++++++++++++++++++
+ xembed.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 100 insertions(+), 14 deletions(-)
+ create mode 100644 xembed.1
+ create mode 100644 xembed.c
+
+diff --git a/LICENSE b/LICENSE
+index f5244dd..d8e9678 100644
+--- a/LICENSE
++++ b/LICENSE
+@@ -1,8 +1,8 @@
+ MIT/X Consortium License
+ 
+ © 2009-2011 Enno Boland <g s01 de>
+-© 2011 Connor Lane Smith <cls@lubutu.com>
+-© 2012-2014 Christoph Lohmann <20h@r-36.net>
++© 2011,2015 Connor Lane Smith <cls@lubutu.com>
++© 2012-2015 Christoph Lohmann <20h@r-36.net>
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a
+ copy of this software and associated documentation files (the "Software"),
+diff --git a/Makefile b/Makefile
+index 32cc25b..acc3246 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,10 +3,11 @@
+ 
+ include config.mk
+ 
+-SRC = tabbed.c
++SRC = tabbed.c xembed.c
+ OBJ = ${SRC:.c=.o}
++BIN = ${OBJ:.o=}
+ 
+-all: options tabbed
++all: options ${BIN}
+ 
+ options:
+ 	@echo tabbed build options:
+@@ -24,13 +25,13 @@ config.h:
+ 	@echo creating $@ from config.def.h
+ 	@cp config.def.h $@
+ 
+-tabbed: tabbed.o
++.o:
+ 	@echo CC -o $@
+-	@${CC} -o $@ tabbed.o ${LDFLAGS}
++	@${CC} -o $@ $< ${LDFLAGS}
+ 
+ clean:
+ 	@echo cleaning
+-	@rm -f tabbed ${OBJ} tabbed-${VERSION}.tar.gz
++	@rm -f ${BIN} ${OBJ} tabbed-${VERSION}.tar.gz
+ 
+ dist: clean
+ 	@echo creating dist tarball
+@@ -42,19 +43,23 @@ dist: clean
+ 	@rm -rf tabbed-${VERSION}
+ 
+ install: all
+-	@echo installing executable file to ${DESTDIR}${PREFIX}/bin
++	@echo installing executable files to ${DESTDIR}${PREFIX}/bin
+ 	@mkdir -p ${DESTDIR}${PREFIX}/bin
+-	@cp -f tabbed ${DESTDIR}${PREFIX}/bin
++	@cp -f ${BIN} ${DESTDIR}${PREFIX}/bin
+ 	@chmod 755 ${DESTDIR}${PREFIX}/bin/tabbed
+-	@echo installing manual page to ${DESTDIR}${MANPREFIX}/man1
++	@echo installing manual pages to ${DESTDIR}${MANPREFIX}/man1
+ 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
+ 	@sed "s/VERSION/${VERSION}/g" < tabbed.1 > ${DESTDIR}${MANPREFIX}/man1/tabbed.1
+ 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/tabbed.1
++	@sed "s/VERSION/${VERSION}/g" < xembed.1 > ${DESTDIR}${MANPREFIX}/man1/xembed.1
++	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/xembed.1
+ 
+ uninstall:
+-	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
++	@echo removing executable files from ${DESTDIR}${PREFIX}/bin
+ 	@rm -f ${DESTDIR}${PREFIX}/bin/tabbed
+-	@echo removing manual page from ${DESTDIR}${MANPREFIX}/man1
++	@rm -f ${DESTDIR}${PREFIX}/bin/xembed
++	@echo removing manual pages from ${DESTDIR}${MANPREFIX}/man1
+ 	@rm -f ${DESTDIR}${MANPREFIX}/man1/tabbed.1
++	@rm -f ${DESTDIR}${MANPREFIX}/man1/xembed.1
+ 
+ .PHONY: all options clean dist install uninstall
+diff --git a/tabbed.1 b/tabbed.1
+index 83af311..ec6e0b2 100644
+--- a/tabbed.1
++++ b/tabbed.1
+@@ -156,7 +156,7 @@ See the LICENSE file for the authors.
+ .SH LICENSE
+ See the LICENSE file for the terms of redistribution.
+ .SH SEE ALSO
+-.BR st (1)
++.BR st (1),
++.BR xembed (1)
+ .SH BUGS
+ Please report them.
+-
+diff --git a/xembed.1 b/xembed.1
+new file mode 100644
+index 0000000..5b0c28c
+--- /dev/null
++++ b/xembed.1
+@@ -0,0 +1,35 @@
++.TH XEMBED 1 tabbed\-VERSION
++.SH NAME
++xembed \- XEmbed foreground process
++.SH SYNOPSIS
++.B xembed
++.I flag command
++.RI [ "argument ..." ]
++.SH DESCRIPTION
++If the environment variable XEMBED is set, and
++.B xembed
++is in the foreground of its controlling tty, it will execute
++.IP
++command flag $XEMBED [argument ...]
++.LP
++Otherwise it will execute
++.IP
++command [argument ...]
++.LP
++.SH EXAMPLE
++In a terminal emulator within a
++.B tabbed
++session, the shell alias
++.IP
++$ alias surf='xembed -e surf'
++.LP
++will cause `surf' to open in a new tab, unless it is run in the background,
++i.e. `surf &', in which case it will instead open in a new window.
++.SH AUTHORS
++See the LICENSE file for the authors.
++.SH LICENSE
++See the LICENSE file for the terms of redistribution.
++.SH SEE ALSO
++.BR tabbed (1)
++.SH BUGS
++Please report them.
+diff --git a/xembed.c b/xembed.c
+new file mode 100644
+index 0000000..0b36603
+--- /dev/null
++++ b/xembed.c
+@@ -0,0 +1,46 @@
++/*
++ * See LICENSE file for copyright and license details.
++ */
++
++#include <fcntl.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++
++int
++main(int argc, char **argv)
++{
++	char *xembed;
++	int tty;
++	pid_t pgrp, tcpgrp;
++
++	if(argc < 3) {
++		fprintf(stderr, "usage: %s flag cmd ...\n", argv[0]);
++		return 2;
++	}
++
++	if(!(xembed = getenv("XEMBED")))
++		goto noembed;
++
++	if((tty = open("/dev/tty", O_RDONLY)) < 0)
++		goto noembed;
++
++	pgrp = getpgrp();
++	tcpgrp = tcgetpgrp(tty);
++
++	close(tty);
++
++	if(pgrp == tcpgrp) { /* in foreground of tty */
++		argv[0] = argv[2];
++		argv[2] = xembed;
++	}
++	else {
++noembed:
++		argv += 2;
++	}
++
++	execvp(argv[0], argv);
++
++	perror(argv[0]); /* failed to execute */
++	return 1;
++}
+-- 
+2.26.2
+

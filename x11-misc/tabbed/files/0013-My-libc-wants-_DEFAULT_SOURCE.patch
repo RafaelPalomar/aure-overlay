@@ -1,0 +1,25 @@
+From c2ce9be47170115a7fa301cc6e93da63847fb860 Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Sun, 25 Jan 2015 10:52:10 +0100
+Subject: [PATCH 13/36] My libc wants _DEFAULT_SOURCE.
+
+---
+ config.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config.mk b/config.mk
+index 5279711..dd741e4 100644
+--- a/config.mk
++++ b/config.mk
+@@ -12,7 +12,7 @@ INCS = -I. -I/usr/include
+ LIBS = -L/usr/lib -lc -lX11
+ 
+ # flags
+-CPPFLAGS = -DVERSION=\"${VERSION}\" -D_BSD_SOURCE
++CPPFLAGS = -DVERSION=\"${VERSION}\" -D_DEFAULT_SOURCE
+ CFLAGS = -std=c99 -pedantic -Wall -O0 ${INCS} ${CPPFLAGS}
+ LDFLAGS = -s ${LIBS}
+ 
+-- 
+2.26.2
+

@@ -1,0 +1,25 @@
+From 4ed0a2da67f742cfb75f85fc02f703e21a0206d6 Mon Sep 17 00:00:00 2001
+From: Christoph Lohmann <20h@r-36.net>
+Date: Sun, 26 Jan 2014 18:52:53 +0100
+Subject: [PATCH 04/36] The check for a minimal new lastsel is not needed
+ anymore.
+
+---
+ tabbed.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tabbed.c b/tabbed.c
+index 5bc2b53..f5850ed 100644
+--- a/tabbed.c
++++ b/tabbed.c
+@@ -1094,7 +1094,6 @@ unmanage(int c) {
+ 		} else if(lastsel > c) {
+ 			lastsel--;
+ 		}
+-		lastsel = MIN(lastsel, nclients - 1);
+ 
+ 		if(c == sel) {
+ 			/* Note that focus() will never set lastsel == sel,
+-- 
+2.26.2
+
