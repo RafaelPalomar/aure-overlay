@@ -1,0 +1,24 @@
+From 56460491b7989af82d2dd3edadf700f4c76f6df2 Mon Sep 17 00:00:00 2001
+From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
+Date: Sun, 22 Nov 2020 13:37:56 +0100
+Subject: [PATCH 3/3] adding alpha value resources management
+
+---
+ config.def.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/config.def.h b/config.def.h
+index 570807c..eb1305e 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -177,6 +177,7 @@ static uint forcemousemod = ShiftMask;
+  */
+ ResourcePref resources[] = {
+ 		{ "font",         STRING,  &font },
++		{ "alpha",        FLOAT,   &alpha },
+ 		{ "color0",       STRING,  &colorname[0] },
+ 		{ "color1",       STRING,  &colorname[1] },
+ 		{ "color2",       STRING,  &colorname[2] },
+-- 
+2.26.2
+

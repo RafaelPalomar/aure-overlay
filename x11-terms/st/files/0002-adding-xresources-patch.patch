@@ -1,7 +1,7 @@
 From 80b57b23059c60350bffcdd020410e5a67119d34 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Sun, 22 Nov 2020 08:26:47 +0100
-Subject: [PATCH 2/2] adding xresources patch
+Subject: [PATCH 2/3] adding xresources patch
 
 ---
  config.def.h | 36 ++++++++++++++++++++++++

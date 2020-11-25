@@ -28,6 +28,7 @@ DEPEND="
 PATCHES=(
 	${FILESDIR}/0001-adding-alpha-patch.patch
 	${FILESDIR}/0002-adding-xresources-patch.patch
+	${FILESDIR}/0003-adding-alpha-value-resources-management.patch
 )
 
 src_prepare() {
