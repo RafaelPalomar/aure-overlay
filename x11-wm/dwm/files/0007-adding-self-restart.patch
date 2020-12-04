@@ -1,7 +1,7 @@
-From a21c29a863402026d01d635fabfa1254d9238797 Mon Sep 17 00:00:00 2001
+From 5e436b39a0e8e0706dae0a361bbbed7ca7ad755e Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Tue, 24 Nov 2020 20:02:51 +0100
-Subject: [PATCH] adding self restart
+Subject: [PATCH 7/7] adding self restart
 
 ---
  Makefile      |  2 +-
@@ -47,7 +47,7 @@ index 0000000..ba01d1d
 +
 +#endif // __ARG_H_
 diff --git a/config.def.h b/config.def.h
-index 8cebf10..af7bc5a 100644
+index 99163e8..9516bdd 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -1,5 +1,7 @@

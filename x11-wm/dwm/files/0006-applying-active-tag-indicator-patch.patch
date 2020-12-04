@@ -1,4 +1,4 @@
-From 000e63342ef7a752664771dd2fc60849f01fc67a Mon Sep 17 00:00:00 2001
+From efadff679fe8b15d56b6df3e76407cfa569f31bd Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Tue, 24 Nov 2020 15:07:27 +0100
 Subject: [PATCH 6/7] applying active tag indicator patch

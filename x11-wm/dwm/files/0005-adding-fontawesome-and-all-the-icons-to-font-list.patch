@@ -1,14 +1,14 @@
-From 172b4ed8f77e5f08c0d5d754f02f4f6706feea9a Mon Sep 17 00:00:00 2001
+From 46bd70fa325f8fe0044c29f843f725cb81f21d51 Mon Sep 17 00:00:00 2001
 From: Rafael Palomar <rafaelpalomaravalos@gmail.com>
 Date: Sun, 22 Nov 2020 21:39:30 +0100
-Subject: [PATCH 5/7] adding fontawesome to font list
+Subject: [PATCH 5/7] adding fontawesome and all-the-icons to font list
 
 ---
  config.def.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/config.def.h b/config.def.h
-index 7931d66..8cebf10 100644
+index 7931d66..99163e8 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -5,7 +5,7 @@ static const unsigned int borderpx  = 1;        /* border pixel of windows */
@@ -16,7 +16,7 @@ index 7931d66..8cebf10 100644
  static const int showbar            = 1;        /* 0 means no bar */
  static const int topbar             = 1;        /* 0 means bottom bar */
 -static const char *fonts[]          = { "monospace:size=10" };
-+static const char *fonts[]          = { "monospace:size=10", "FontAwesome:size=12" };
++static const char *fonts[]          = { "monospace:size=10", "FontAwesome:size=11","all\-the\-icons:size=11" };
  static const char dmenufont[]       = "monospace:size=10";
  static const char col_gray1[]       = "#222222";
  static const char col_gray2[]       = "#444444";
