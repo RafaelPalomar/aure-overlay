@@ -1,0 +1,9 @@
+{
+    "tenant_id": "TENANT_ID",
+    "client_id": "CLIENT_ID",
+    "client_secret": "CLIENT_SECRET",
+    "redirect_host": "localhost",
+    "redirect_port": "5000",
+    "redirect_path": "/getToken/",
+    "scopes": ["https://outlook.office.com/IMAP.AccessAsUser.All"]
+}
