@@ -1,0 +1,82 @@
+diff --git a/contrib/oauth2/mutt_oauth2.py b/contrib/oauth2/mutt_oauth2.py
+index ed241fc63..38b7887f6 100644
+--- a/contrib/oauth2/mutt_oauth2.py
++++ b/contrib/oauth2/mutt_oauth2.py
+@@ -44,7 +44,7 @@ import subprocess
+ # encryption and decryption pipes you prefer. They should read from standard
+ # input and write to standard output. The example values here invoke GPG,
+ # although won't work until an appropriate identity appears in the first line.
+-ENCRYPTION_PIPE = ['gpg', '--encrypt', '--recipient', 'YOUR_GPG_IDENTITY']
++ENCRYPTION_PIPE = ['gpg', '--encrypt', '--recipient']
+ DECRYPTION_PIPE = ['gpg', '--decrypt']
+ 
+ registrations = {
+@@ -52,7 +52,7 @@ registrations = {
+         'authorize_endpoint': 'https://accounts.google.com/o/oauth2/auth',
+         'devicecode_endpoint': 'https://oauth2.googleapis.com/device/code',
+         'token_endpoint': 'https://accounts.google.com/o/oauth2/token',
+-        'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob',
++        'redirect_uri': 'http://localhost:1/',
+         'imap_endpoint': 'imap.gmail.com',
+         'pop_endpoint': 'pop.gmail.com',
+         'smtp_endpoint': 'smtp.gmail.com',
+@@ -74,8 +74,8 @@ registrations = {
+         'scope': ('offline_access https://outlook.office.com/IMAP.AccessAsUser.All '
+                   'https://outlook.office.com/POP.AccessAsUser.All '
+                   'https://outlook.office.com/SMTP.Send'),
+-        'client_id': '',
+-        'client_secret': '',
++        'client_id': '08162f7c-0fd2-4200-a84a-f25a4db0b584',
++        'client_secret': 'TxRBilcHdC6WGBee]fs?QR:SJ8nI[g82',
+     },
+ }
+ 
+@@ -91,6 +91,9 @@ ap.add_argument('-d', '--debug', action='store_true', help='enable debug output'
+ ap.add_argument('tokenfile', help='persistent token storage')
+ ap.add_argument('-a', '--authorize', action='store_true', help='manually authorize new tokens')
+ ap.add_argument('--authflow', help='authcode | localhostauthcode | devicecode')
++ap.add_argument('-g', '--gpgid', action='store', help='gpg id for encryption (e.g., email)')
++ap.add_argument('-e', '--email', action='store', help='login email')
++ap.add_argument('-r', '--registration', action='store', help='google | microsoft')
+ ap.add_argument('-t', '--test', action='store_true', help='test IMAP/POP/SMTP endpoints')
+ args = ap.parse_args()
+ 
+@@ -115,21 +118,32 @@ def writetokenfile():
+         path.touch(mode=0o600)
+     if 0o777 & path.stat().st_mode != 0o600:
+         sys.exit('Token file has unsafe mode. Suggest deleting and starting over.')
+-    sub2 = subprocess.run(ENCRYPTION_PIPE, check=True, input=json.dumps(token).encode(),
++    sub2 = subprocess.run(ENCRYPTION_PIPE+[token['gpg_encryption_id']], check=True, input=json.dumps(token).encode(),
+                           capture_output=True)
+     path.write_bytes(sub2.stdout)
+ 
+-
+ if args.debug:
+     print('Obtained from token file:', json.dumps(token))
+ if not token:
+     if not args.authorize:
+         sys.exit('You must run script with "--authorize" at least once.')
+     print('Available app and endpoint registrations:', *registrations)
+-    token['registration'] = input('OAuth2 registration: ')
+-    token['authflow'] = input('Preferred OAuth2 flow ("authcode" or "localhostauthcode" '
+-                              'or "devicecode"): ')
+-    token['email'] = input('Account e-mail address: ')
++    if not args.registration:
++        token['registration'] = input('OAuth2 registration: ')
++    else:
++        token['registration'] = args.registration
++    if not args.authflow:
++        token['authflow'] = input('Preferred OAuth2 flow ("authcode" or "localhostauthcode" ' 'or "devicecode"): ')
++    else:
++        token['authflow'] = args.authflow
++    if not args.email:
++        token['email'] = input('Login identity: ')
++    else:
++        token['email'] = args.email
++    if not args.gpgid:
++        token['gpg_encryption_id'] = input('GPG encryption id: ')
++    else:
++        token['gpg_encryption_id'] = args.gpgid
+     token['access_token'] = ''
+     token['access_token_expiration'] = ''
+     token['refresh_token'] = ''

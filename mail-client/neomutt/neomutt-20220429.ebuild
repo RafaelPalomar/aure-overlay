@@ -22,7 +22,7 @@ HOMEPAGE="https://neomutt.org/"
 LICENSE="GPL-2"
 SLOT="0"
 IUSE="autocrypt berkdb doc gdbm gnutls gpgme idn kerberos kyotocabinet
-	lmdb lz4 nls notmuch ntnuoauth2 pgp-classic qdbm sasl selinux slang smime-classic
+	lmdb lz4 nls notmuch oauth2 pgp-classic qdbm sasl selinux slang smime-classic
 	ssl tokyocabinet test zlib zstd"
 REQUIRED_USE="
 	autocrypt? ( gpgme )"
@@ -77,7 +77,7 @@ RDEPEND="${CDEPEND}
 
 RESTRICT="!test? ( test )"
 
-PATCHES="${FILESDIR}/neomutt-20220429-ntnuoauth2.patch"
+PATCHES=(${FILESDIR}/mutt_oauth2.patch)
 
 src_unpack() {
 	if [[ -n ${A} ]]; then
@@ -155,7 +155,7 @@ src_install() {
 		doman docs/neomutt.1 docs/neomuttrc.5
 	fi
 
-	if use ntnuoauth2; then
+	if use oauth2; then
 		install -Dm755 "contrib/oauth2/mutt_oauth2.py" "${D}/usr/bin/mutt_oauth2.py"
 	fi
 
