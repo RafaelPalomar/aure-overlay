@@ -1,5 +1,5 @@
 diff --git a/contrib/oauth2/mutt_oauth2.py b/contrib/oauth2/mutt_oauth2.py
-index ed241fc63..38b7887f6 100644
+index ed241fc63..bcaf8eb77 100644
 --- a/contrib/oauth2/mutt_oauth2.py
 +++ b/contrib/oauth2/mutt_oauth2.py
 @@ -44,7 +44,7 @@ import subprocess
@@ -11,7 +11,7 @@ index ed241fc63..38b7887f6 100644
  DECRYPTION_PIPE = ['gpg', '--decrypt']
  
  registrations = {
-@@ -52,7 +52,7 @@ registrations = {
+@@ -52,14 +52,14 @@ registrations = {
          'authorize_endpoint': 'https://accounts.google.com/o/oauth2/auth',
          'devicecode_endpoint': 'https://oauth2.googleapis.com/device/code',
          'token_endpoint': 'https://accounts.google.com/o/oauth2/token',
@@ -20,6 +20,16 @@ index ed241fc63..38b7887f6 100644
          'imap_endpoint': 'imap.gmail.com',
          'pop_endpoint': 'pop.gmail.com',
          'smtp_endpoint': 'smtp.gmail.com',
+-        'sasl_method': 'OAUTHBEARER',
++        'sasl_method': 'XOAUTH2',
+         'scope': 'https://mail.google.com/',
+-        'client_id': '',
+-        'client_secret': '',
++        'client_id': '08162f7c-0fd2-4200-a84a-f25a4db0b584',
++        'client_secret': 'TxRBilcHdC6WGBee]fs?QR:SJ8nI[g82',
+     },
+     'microsoft': {
+         'authorize_endpoint': 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
 @@ -74,8 +74,8 @@ registrations = {
          'scope': ('offline_access https://outlook.office.com/IMAP.AccessAsUser.All '
                    'https://outlook.office.com/POP.AccessAsUser.All '
